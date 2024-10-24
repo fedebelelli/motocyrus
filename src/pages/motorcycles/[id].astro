@@ -1,0 +1,156 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { motorcycles } from '../../data/motorcycles';
+import { accessories } from '../../data/accessories';
+
+export function getStaticPaths() {
+  return motorcycles.map(moto => ({
+    params: { id: moto.id }
+  }));
+}
+
+const { id } = Astro.params;
+const motorcycle = motorcycles.find(m => m.id === id);
+const compatibleAccessories = accessories.filter(acc => 
+  acc.compatibleModels.includes(id)
+);
+---
+
+<Layout title={`${motorcycle.name} - Specs`}>
+  <main class="container mx-auto px-4 py-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <img 
+            src={motorcycle.image} 
+            alt={motorcycle.name} 
+            class="w-full rounded-lg"
+          />
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{motorcycle.name}</h1>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Horsepower</h3>
+                <p class="text-gray-600 dark:text-gray-300">{motorcycle.specs.horsepower} HP</p>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Top Speed</h3>
+                <p class="text-gray-600 dark:text-gray-300">{motorcycle.specs.topSpeed} km/h</p>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Weight</h3>
+                <p class="text-gray-600 dark:text-gray-300">{motorcycle.specs.weight} kg</p>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Engine</h3>
+                <p class="text-gray-600 dark:text-gray-300">{motorcycle.specs.engine}</p>
+              </div>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300">{motorcycle.description}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Detailed Specifications</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+              <tr class="bg-gray-50 dark:bg-gray-700">
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Transmission</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.transmission}</td>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Fuel Capacity</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.fuelCapacity} L</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Seat Height</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.seatHeight} mm</td>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Wheelbase</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.wheelbase} mm</td>
+              </tr>
+              <tr class="bg-gray-50 dark:bg-gray-700">
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Ground Clearance</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.groundClearance} mm</td>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Compression Ratio</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.compression}</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Bore × Stroke</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.bore} × {motorcycle.specs.stroke} mm</td>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Fuel System</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.fuelSystem}</td>
+              </tr>
+              <tr class="bg-gray-50 dark:bg-gray-700">
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Front Suspension</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.suspension.front}</td>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Rear Suspension</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.suspension.rear}</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Front Brakes</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.brakes.front}</td>
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Rear Brakes</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300">{motorcycle.specs.brakes.rear}</td>
+              </tr>
+              <tr class="bg-gray-50 dark:bg-gray-700">
+                <td class="py-2 px-4 font-semibold text-gray-900 dark:text-white">Clutch Type</td>
+                <td class="py-2 px-4 text-gray-600 dark:text-gray-300" colspan="3">{motorcycle.specs.clutch}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Compatible Accessories</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {compatibleAccessories.map(acc => (
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <img src={acc.image} alt={acc.name} class="w-full h-48 object-cover rounded-lg mb-4"/>
+            <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{acc.name}</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">{acc.description}</p>
+            <div class="flex justify-between items-center">
+              <span class="text-xl font-bold text-gray-900 dark:text-white">${acc.price}</span>
+              <div class="space-x-2">
+                <a 
+                  href={acc.externalLinks.amazon} 
+                  target="_blank" 
+                  class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Amazon
+                </a>
+                <button 
+                  class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                >
+                  Buy Now
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+</boltArtifact>
+
+I've enhanced the motorcycle specifications by:
+
+1. Adding detailed technical data to each motorcycle in the data file
+2. Creating a comprehensive specifications table with:
+   - Transmission details
+   - Fuel capacity
+   - Seat height and wheelbase
+   - Ground clearance
+   - Suspension specifications
+   - Brake system details
+   - Engine specifications (compression ratio, bore × stroke)
+   - Fuel system information
+   - Clutch type
+3. Styling the table with alternating row colors and proper dark mode support
+4. Making the table responsive with horizontal scrolling on mobile devices
+
+The specifications are now much more detailed and organized in a clean, easy-to-read format that maintains consistency with the dar

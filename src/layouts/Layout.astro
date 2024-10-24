@@ -1,0 +1,54 @@
+---
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+    
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <nav class="bg-black text-white p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-xl font-bold">MotoSpecs</a>
+        <div class="space-x-4">
+          <a href="/" class="hover:text-gray-300">Home</a>
+          <a href="/motorcycles" class="hover:text-gray-300">Motorcycles</a>
+          <a href="/accessories" class="hover:text-gray-300">Accessories</a>
+        </div>
+      </div>
+    </nav>
+    <slot />
+    <ThemeToggle />
+    <footer class="bg-black text-white p-4 mt-8">
+      <div class="container mx-auto text-center">
+        <p>&copy; 2023 MotoSpecs. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

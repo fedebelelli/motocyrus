@@ -1,0 +1,75 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { brands } from '../../data/brands';
+import { motorcycles } from '../../data/motorcycles';
+
+export function getStaticPaths() {
+  return brands.map(brand => ({
+    params: { brand: brand.id }
+  }));
+}
+
+const { brand: brandId } = Astro.params;
+const brand = brands.find(b => b.id === brandId);
+const brandMotorcycles = motorcycles.filter(m => m.brand === brandId);
+---
+
+<Layout title={`${brand.name} Motorcycles - MotoSpecs`}>
+  <main class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">{brand.name} Motorcycles</h1>
+      <div class="relative">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search motorcycles..."
+          class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <div id="motorcycle-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      {brandMotorcycles.map(moto => (
+        <a 
+          href={`/motorcycles/${moto.id}`}
+          class="motorcycle-card block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          data-name={moto.name.toLowerCase()}
+        >
+          <div class="aspect-square overflow-hidden">
+            <img 
+              src={moto.image} 
+              alt={moto.name}
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="p-3">
+            <h2 class="text-sm font-bold text-gray-900 dark:text-white truncate">{moto.name}</h2>
+            <p class="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">{moto.shortDescription}</p>
+            <div class="mt-2 flex justify-between items-center">
+              <span class="text-xs font-semibold text-gray-900 dark:text-white">{moto.specs.horsepower} HP</span>
+              <span class="text-xs text-gray-600 dark:text-gray-300">{moto.specs.engine.split(',')[0]}</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const searchInput = document.getElementById('search') as HTMLInputElement;
+  const motorcycleCards = document.querySelectorAll('.motorcycle-card');
+
+  searchInput?.addEventListener('input', (e) => {
+    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+
+    motorcycleCards.forEach(card => {
+      const name = (card as HTMLElement).dataset.name;
+      if (name?.includes(searchTerm)) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+</script>
